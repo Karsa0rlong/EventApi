@@ -1,0 +1,22 @@
+version: "0.7"
+services:
+  reminder-api:
+    working_dir: /usr/src/app
+    build:
+      context: .
+      dockerfile: ./worker #Change to prod for prod
+    ports:
+      - "80:8000"
+    volumes:
+      - ./app/:/usr/src/app/
+      #- logvolume01:/var/log
+    networks:
+      - db-net
+  mongo:
+    image: mongo:latest
+    networks:
+      - db-net
+networks:
+  db-net: {}
+
+

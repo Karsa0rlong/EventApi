@@ -1,0 +1,14 @@
+# API crap
+python-jose[cryptography]
+fastapi
+passlib[bcrypt]
+uvicorn[standard]
+pymongo
+python-multipart
+email-validator
+
+certifi==2021.5.30
+charset-normalizer==2.0.6
+idna==3.2
+requests==2.26.0
+urllib3==1.26.7

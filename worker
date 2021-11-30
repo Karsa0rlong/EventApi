@@ -1,0 +1,13 @@
+FROM python:3
+
+WORKDIR /usr/src/app
+VOLUME /usr/src/app
+# COPY ./app .
+
+COPY app/requirements.txt ./
+# COPY app/frozen_requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 80/tcp
+
+CMD ["uvicorn","--host", "0.0.0.0", "main:app", "--reload"]
