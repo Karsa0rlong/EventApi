@@ -1,14 +1,13 @@
-version: "0.7"
+version: "3.8"
 services:
   reminder-api:
-    working_dir: /usr/src/app
     build:
       context: .
       dockerfile: ./worker #Change to prod for prod
     ports:
       - "80:8000"
     volumes:
-      - ./app/:/usr/src/app/
+      - ./src:/usr/src/app
       #- logvolume01:/var/log
     networks:
       - db-net

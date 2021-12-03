@@ -4,10 +4,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 # COPY app/requirements.txt ./
-COPY app/frozen_requirements.txt ./requirements.txt
+COPY frozen_requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000/tcp
 
 
-CMD ["uvicorn", "--host", "0.0.0.0", "main:app", "--reload"]
+CMD ["uvicorn", "--host", "0.0.0.0", "app.main:app", "--reload"]

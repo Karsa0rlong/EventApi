@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field, validator
 from pydantic.color import Color
 
-from app.Models.Constraint import ConstraintType, Constraint, EventColorConstraint
+from .Constraint import Constraint, EventColorConstraint, ConstraintType
 
 router = APIRouter()
 
