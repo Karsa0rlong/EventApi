@@ -1,6 +1,7 @@
-version: "3.8"
+version: "3.9"
 services:
-  traefik: traefik:latest
+  traefik:
+    image: traefik:v1.7.33
     restart: always
     ports:
     - "80:80"
@@ -8,7 +9,7 @@ services:
     networks:
     - web
     volumes:
-    - ./socks/docker.sock:/var/run/docker.sock
+    - /var/run/docker.sock:/var/run/docker.sock
     - ./traefik/traefik.toml:/traefik.toml
     - ./traefik/acme.json:/acme.json
     container_name: traefik

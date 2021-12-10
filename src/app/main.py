@@ -20,8 +20,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 origins = [
     "http://localhost",
     "http://localhost:8080",
+    "http://localhost:3000",
     "https://www.remindme.space/",
-
 ]
 
 
