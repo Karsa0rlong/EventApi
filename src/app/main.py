@@ -3,6 +3,7 @@ from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, EmailStr
@@ -31,6 +32,14 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 app = FastAPI()
 # app.include_router(Constraint.ConstraintRouter) Temporary disable
 app.include_router(Event.EventRouter)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def verify_password(plain_password, hashed_password):
