@@ -1,6 +1,7 @@
 version: "3.8"
 services:
-  traefik:
+  traefik: traefik:latest
+    restart: always
     ports:
     - "80:80"
     - "443:443"
