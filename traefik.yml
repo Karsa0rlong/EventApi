@@ -1,5 +1,4 @@
 version: "3.8"
-
   traefik:
     ports:
       - "80:80"
@@ -14,5 +13,3 @@ version: "3.8"
 networks:
   web:
     external: true
-
-
