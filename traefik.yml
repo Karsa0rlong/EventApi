@@ -1,14 +1,15 @@
 version: "3.8"
+services:
   traefik:
     ports:
-      - "80:80"
-      - "443:443"
+    - "80:80"
+    - "443:443"
     networks:
-      - web
+    - web
     volumes:
-      - ./socks/docker.sock:/var/run/docker.sock
-      - ./traefik/traefik.toml:/traefik.toml
-      - ./traefik/acme.json:/acme.json
+    - ./socks/docker.sock:/var/run/docker.sock
+    - ./traefik/traefik.toml:/traefik.toml
+    - ./traefik/acme.json:/acme.json
     container_name: traefik
 networks:
   web:
