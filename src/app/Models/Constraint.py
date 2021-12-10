@@ -27,20 +27,39 @@ class Constraint(NewConstraint):
         return str(v)
 
 
-class EventStageConstraint(Constraint):
+class EventStage(BaseModel):
     """A constraint on the stage of an event """
     event_id: str
+
+
+class EventStageConstraint(EventStage, Constraint):
     constraint_type: ConstraintType = ConstraintType.stage
+    pass
 
 
-class EventTimeConstraint(Constraint):
-    """A constraint on the stage of an event """
+class EventTime(BaseModel):
     start_time: datetime
     end_time: datetime
+    all_day = bool
+
+
+class EventTimeConstraint(EventTime, Constraint):
     constraint_type: ConstraintType = ConstraintType.time
+    pass
 
 
-class EventColorConstraint(Constraint):
-    """A condition that must be fulfilled before"""
+class EventColor(BaseModel):
     color: Color
+
+    @validator('color')
+    def color_to_hex_string(cls, v: Color):
+        return v.as_hex()
+
+
+class EventColorConstraint(EventColor, Constraint):
     constraint_type: ConstraintType = ConstraintType.color
+    pass
+
+
+if __name__ == "__main__":
+    pass

@@ -7,10 +7,11 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, EmailStr
 
-from .dependencies import get_current_active_user, SECRET_KEY, ALGORITHM, get_user
 from .DB.DB import get_collection
+from .DB.Utilities import fail_if_found_one
 from .Models.User import User, DBUser, NewDBUser
-from .Routes import Constraint, Event
+from .Routes import Event
+from .dependencies import get_current_active_user, SECRET_KEY, ALGORITHM, get_user
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -28,7 +29,7 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # other_context = CryptContext(schemes=[])
 
 app = FastAPI()
-app.include_router(Constraint.ConstraintRouter)
+# app.include_router(Constraint.ConstraintRouter) Temporary disable
 app.include_router(Event.EventRouter)
 
 
@@ -105,6 +106,10 @@ class SignUpRequest(SignUp):
 @app.post("/auth/signup", response_model=SignUp)
 async def sign_up(requested_credentials: SignUpRequest):
     # Todo Verify email active by verification
+    # TODO email not already registered
+
+    fail_if_found_one("users",
+                      {"$or": [{"username": requested_credentials.username, "email": requested_credentials.email}]})
     new_user = NewDBUser(**requested_credentials.get_hashed_user_credentials())
     users = get_collection("users")
     users.insert_one(new_user.dict())

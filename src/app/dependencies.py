@@ -10,7 +10,6 @@ from pymongo.collection import Collection
 from starlette import status
 
 from .DB.DB import get_client
-from .Models.Constraint import EventStageConstraint, EventColorConstraint
 from .Models.User import DBUser
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -43,10 +42,6 @@ async def get_current_active_user(current_user: DBUser = Depends(get_current_use
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
-
-allowed_constraints = {"EventStageConstraint": EventStageConstraint,
-                       "EventColorConstraint": EventColorConstraint}
 
 
 def user_and_event_filter(user_id, event_id):

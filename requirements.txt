@@ -6,6 +6,7 @@ uvicorn[standard]
 pymongo
 python-multipart
 email-validator
+motor
 
 certifi==2021.5.30
 charset-normalizer==2.0.6

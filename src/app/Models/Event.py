@@ -1,37 +1,53 @@
+from datetime import datetime
 from enum import Enum
 from typing import List
 
 from bson import ObjectId
 from fastapi import APIRouter
 from pydantic import BaseModel, Field, validator
-from pydantic.color import Color
 
-from .Constraint import Constraint, EventColorConstraint, ConstraintType
+from .Constraint import EventColor
 
 router = APIRouter()
 
 
-class BaseEvent(BaseModel):
-    name: str  # "Name of Event"
-    description: str  # "A description of the event"
-    tags: List[str]  # [list of tags applicable to event]
-    constraints: List[Constraint]  # [list of Constraints]
+class Tag(BaseModel):
+    tag: str = Field(..., min_length=1, max_length=64)
+
+
+class EventTime(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    all_day: bool = False
+
+
+class Tags(BaseModel):
+    tags: List[Tag] = Field(..., max_items=10)  # [set of tags applicable to event]
 
     @validator('tags')
-    def num_tags_allowed(cls, v):
-        if len(v) > 5:
-            raise ValueError("Only five tags are allowed")
+    def tag_length(cls, v):
+        for item in v:
+            if len(item.tag) > 64:
+                raise ValueError("Only five tags are allowed")
         return v
 
-    @validator('constraints')
-    def num_constraints_allowed(cls, v):
-        if len(v) > 5:
-            raise ValueError("Only five constraints are allowed")
+    @validator('tags')
+    def no_duplicates(cls, v):
+        tag_set_len = len(set([item.tag for item in v]))
+        tag_len = len(v)
+        if not tag_len == tag_set_len:
+            raise ValueError("Duplicates not allowed")
         return v
+
+
+class NewEvent(Tags):
+    name: str = Field(..., min_length=1, max_length=64)  # "Name of Event"
+    description: str = Field(..., max_length=256)  # "A description of the event"
+    time_details: EventTime
+    presentation: EventColor
 
     class Config:
         use_enum_values = True
-        max_anystr_length = 25
 
 
 class Stage(str, Enum):
@@ -40,12 +56,12 @@ class Stage(str, Enum):
     complete = 'complete'
 
 
-class NewEventInDB(BaseEvent):
+class NewEventInDB(NewEvent):
     stage: Stage  # "stage of event"
     owner_id: str  # Who owns the event
 
 
-class EventResponse(BaseEvent):
+class EventResponse(NewEvent):
     id: str = Field(..., alias='_id')
 
     @validator('id', pre=True, always=True)
@@ -59,10 +75,4 @@ class EventInDB(EventResponse):
 
 
 if __name__ == "__main__":
-    print("test")
-    e = BaseEvent(name='Test', description="A test event", tags=["test-tag1", "test-tag2"],
-                  constraints=[
-                      EventColorConstraint(name='test', constraint_type=ConstraintType.color, color=Color('#d60404'),
-                                           _id='1')])
-    print(e.dict())
-    print("test")
+    pass
