@@ -4,18 +4,29 @@ services:
     build:
       context: .
       dockerfile: ./worker #Change to prod for prod
-    ports:
-      - "80:8000"
+
     volumes:
       - ./src:/usr/src/app
-      #- logvolume01:/var/log
     networks:
+      - web
       - db-net
+    expose:
+      - "8000"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.enable=true"
+      - "traefik.basic.frontend.rule=Host:api.gurule.rocks"
+      - "traefik.basic.port=8000"
+      - "traefik.basic.protocol=http"
+    restart: always
   mongo:
     image: mongo:latest
     networks:
       - db-net
+    restart: always
 networks:
   db-net: {}
+  web:
+    external: true
 
 

@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, EmailStr
-
+from fastapi.middleware.cors import CORSMiddleware
 from .DB.DB import get_collection
 from .DB.Utilities import fail_if_found_one
 from .Models.User import User, DBUser, NewDBUser
@@ -16,6 +16,13 @@ from .dependencies import get_current_active_user, SECRET_KEY, ALGORITHM, get_us
 # to get a string like this run:
 # openssl rand -hex 32
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "https://www.remindme.space/",
+
+]
 
 
 class Token(BaseModel):
@@ -29,6 +36,13 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # other_context = CryptContext(schemes=[])
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # app.include_router(Constraint.ConstraintRouter) Temporary disable
 app.include_router(Event.EventRouter)
 
